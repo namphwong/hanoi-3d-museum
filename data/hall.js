@@ -8,9 +8,9 @@ export const hallArtworks = [
     meta: "ACTIVITY SCHEDULE · 3 ROUNDS",
     image: "./assets/artworks/hall/station-rotation.png",
     accent: "#6b4034",
-    position: [0, 2.42, -8.58],
+    position: [0, 2, -8.58],
     rotation: [0, 0, 0],
-    size: [4.6, 3.25],
+    size: [4.8, 2.04],
     doubleSided: true,
     collider: true
   }
