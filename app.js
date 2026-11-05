@@ -289,7 +289,7 @@ const audioController = initAudio({ soundButton: document.querySelector("#sound-
 const tourTimerButton = document.querySelector("#tour-timer");
 const tourTimeSettings = document.querySelector("#tour-time-settings");
 const tourDurationInput = document.querySelector("#tour-duration");
-let selectedTourDurationSeconds = 6 * 60;
+let selectedTourDurationSeconds = 0;
 let tourRunning = false;
 const tourTimer = initTourTimer({
   timerElement: document.querySelector("#tour-time"),
@@ -317,7 +317,7 @@ function startTour() {
   if (welcomeDialog.open) welcomeDialog.close();
   tourRunning = true;
   audioController.startTour();
-  tourTimer.start(selectedTourDurationSeconds);
+  if (selectedTourDurationSeconds > 0) tourTimer.start(selectedTourDurationSeconds);
   controls.lock();
 }
 

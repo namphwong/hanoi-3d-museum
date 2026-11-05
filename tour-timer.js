@@ -19,7 +19,8 @@ export function initTourTimer({
 }) {
   let deadline = null;
   let intervalId = null;
-  let remainingSeconds = TOUR_DURATION_SECONDS;
+  // Stay stopped at 00:00 until the visitor explicitly chooses a duration.
+  let remainingSeconds = 0;
   let finalMinuteStarted = false;
 
   const render = () => {
