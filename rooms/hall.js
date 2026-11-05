@@ -24,10 +24,14 @@ export function createHallRoom({ THREE, scene, box, materials }) {
     scene.add(displaySupport);
   }
 
-  // Two centred displays lead visitors naturally from the introduction to the
-  // station rotation board without changing the side circulation routes.
-  createDisplaySupport("hall introduction support group", 4.8);
-  createDisplaySupport("hall schedule support group", 1.4);
+  // The introduction is suspended above head height, leaving the runway open.
+  box("hall introduction ceiling mount", [4.65, .08, .18], [0, 4.9, 4.8], materials.dark, { cast: false });
+  for (const x of [-1.85, 1.85]) {
+    box("hall introduction hanging rod", [.055, .16, .055], [x, 4.79, 4.8], materials.gold, { cast: false });
+  }
+
+  // The schedule remains freestanding farther along the centreline.
+  createDisplaySupport("hall schedule support group", 0);
 
   // A compact low-poly Đông Sơn drum gives the hall a Vietnamese focal point.
   const bronze = new THREE.MeshStandardMaterial({ color: 0x8b5a24, roughness: .48, metalness: .65 });

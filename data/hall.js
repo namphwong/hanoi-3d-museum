@@ -8,11 +8,11 @@ export const hallArtworks = [
     meta: "MUSEUM INTRODUCTION",
     image: "./assets/artworks/hall/museum-intro.jpg",
     accent: "#981b16",
-    position: [0, 2, 4.8],
+    position: [0, 3.4, 4.8],
     rotation: [0, 0, 0],
-    size: [4.8, 2.7],
+    size: [4.4, 2.475],
     doubleSided: true,
-    collider: true
+    collider: false
   },
   {
     id: "hall-01",
@@ -22,7 +22,7 @@ export const hallArtworks = [
     meta: "ACTIVITY SCHEDULE · 3 ROUNDS",
     image: "./assets/artworks/hall/station-rotation.png",
     accent: "#6b4034",
-    position: [0, 2, 1.4],
+    position: [0, 2, 0],
     rotation: [0, 0, 0],
     size: [4.8, 2.04],
     doubleSided: true,
