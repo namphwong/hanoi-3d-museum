@@ -179,10 +179,24 @@ function addArtwork(art) {
   const group = new THREE.Group(); group.position.set(...art.position); group.rotation.set(...art.rotation);
   const frame = new THREE.Mesh(new THREE.BoxGeometry(w + .18, h + .18, .09), darkMaterial); frame.castShadow = true; group.add(frame);
   const texture = art.image ? textureLoader.load(art.image) : makePlaceholderTexture(art); texture.colorSpace = THREE.SRGBColorSpace;
-  const image = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshStandardMaterial({map:texture,roughness:.78,metalness:0}));
+  const imageMaterial = new THREE.MeshStandardMaterial({map:texture,roughness:.78,metalness:0});
+  const image = new THREE.Mesh(new THREE.PlaneGeometry(w, h), imageMaterial);
   image.position.z = .051; image.userData.artwork = art; group.add(image); artworkMeshes.push(image);
+  if (art.doubleSided) {
+    const backImage = new THREE.Mesh(new THREE.PlaneGeometry(w, h), imageMaterial);
+    backImage.position.z = -.051; backImage.rotation.y = Math.PI; backImage.userData.artwork = art;
+    group.add(backImage); artworkMeshes.push(backImage);
+  }
   const spot = new THREE.SpotLight(0xfff3dc, 10, 8, .52, .55, 1.4); spot.position.set(0, 1.65, 2.2); spot.target.position.set(0,0,0); group.add(spot, spot.target);
+  if (art.doubleSided) {
+    const backSpot = new THREE.SpotLight(0xfff3dc, 10, 8, .52, .55, 1.4);
+    backSpot.position.set(0, 1.65, -2.2); backSpot.target.position.set(0,0,0); group.add(backSpot, backSpot.target);
+  }
   scene.add(group);
+  if (art.collider) {
+    group.updateMatrixWorld(true);
+    colliders.push(new THREE.Box3().setFromObject(frame));
+  }
 }
 artworks.forEach(addArtwork);
 

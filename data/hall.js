@@ -3,13 +3,15 @@ export const hallArtworks = [
   {
     id: "hall-01",
     section: "MAIN HALL",
-    title: "Welcome to Hanoi",
-    description: "Ảnh mở đầu ở sảnh. Bạn có thể dùng vị trí này cho poster chính của triển lãm.",
-    meta: "PLACEHOLDER · HERO IMAGE",
-    image: null,
-    accent: "#b33a2e",
-    position: [0, 2.55, -8.82],
+    title: "Station Rotation",
+    description: "Sơ đồ luân chuyển ba nhóm qua ba trạm. Mỗi vòng kéo dài 6 phút và toàn bộ hoạt động gồm 3 vòng.",
+    meta: "ACTIVITY SCHEDULE · 3 ROUNDS",
+    image: "./assets/artworks/hall/station-rotation.png",
+    accent: "#6b4034",
+    position: [0, 2, -8.58],
     rotation: [0, 0, 0],
-    size: [4.6, 2.6]
+    size: [4.8, 2.04],
+    doubleSided: true,
+    collider: true
   }
 ];
