@@ -86,13 +86,11 @@ function createRunwayTexture() {
 const runwayMaterial = new THREE.MeshStandardMaterial({
   map: createRunwayTexture(), color: 0xffffff, roughness: .94, metalness: 0
 });
-box("runway carpet entrance", [4.2, .045, 12.2], [0, .035, 6.25], runwayMaterial, { cast: false, receive: true });
-box("runway carpet gallery", [4.2, .045, 6.15], [0, .035, -5.63], runwayMaterial, { cast: false, receive: true });
+box("continuous runway carpet", [4.2, .045, 21.05], [0, .035, 1.825], runwayMaterial, { cast: false, receive: true });
 
 // Slim brass edging makes the carpet read like a fashion-show runway.
 for (const x of [-2.15, 2.15]) {
-  box("runway brass edge", [.07, .055, 12.2], [x, .047, 6.25], goldMaterial, { cast: false });
-  box("runway brass edge", [.07, .055, 6.15], [x, .047, -5.63], goldMaterial, { cast: false });
+  box("runway brass edge", [.07, .055, 21.05], [x, .047, 1.825], goldMaterial, { cast: false });
 }
 
 // Low guide lights frame the runway without blocking movement.
@@ -129,12 +127,9 @@ box("fusion south right", [5.2, 5, .28], [7.4, 2.5, -9], wallMaterial, { collide
 for (let z = -18; z <= 10; z += 4) box("ceiling beam", [29.4, .32, .34], [0, 4.63, z], darkMaterial);
 for (const x of [-10, -5, 0, 5, 10]) box("ceiling rail", [.16, .18, 33], [x, 4.42, -4], darkMaterial);
 
-// Entrance posts and central exhibit plinth.
+// Entrance posts frame the beginning of the runway.
 box("entrance post left", [.45, 4.2, .45], [-2.4, 2.1, 12.4], darkMaterial, { collider: true });
 box("entrance post right", [.45, 4.2, .45], [2.4, 2.1, 12.4], darkMaterial, { collider: true });
-box("plinth", [2.4, .65, 2.4], [0, .33, -1.2], new THREE.MeshStandardMaterial({color:0xd8d6cd,roughness:.82}), { collider: true });
-const sculpture = new THREE.Mesh(new THREE.TorusKnotGeometry(.58, .14, 120, 18), goldMaterial);
-sculpture.position.set(0, 1.45, -1.2); sculpture.castShadow = true; scene.add(sculpture);
 
 function addStripLight(x, z, color = 0xfff2d8) {
   const light = new THREE.PointLight(color, 6.5, 10, 2); light.position.set(x, 4.05, z); light.castShadow = false; scene.add(light);
@@ -246,7 +241,7 @@ renderer.domElement.addEventListener("touchmove", e => { if (!touchStart || e.to
 addEventListener("resize", () => { camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
 
 function animate() {
-  requestAnimationFrame(animate); const delta=Math.min(clock.getDelta(),.05); updateMovement(delta); sculpture.rotation.y+=delta*.3; sculpture.rotation.x+=delta*.08; updateUI(); renderer.render(scene,camera);
+  requestAnimationFrame(animate); const delta=Math.min(clock.getDelta(),.05); updateMovement(delta); updateUI(); renderer.render(scene,camera);
 }
 animate();
 setTimeout(() => document.querySelector("#loading").classList.add("done"), 800);
