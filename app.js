@@ -55,6 +55,55 @@ function box(name, size, position, material, { collider = false, cast = true, re
 box("floor", [30, .25, 34], [0, -.12, -4], concreteMaterial, { receive: true });
 box("ceiling", [30, .22, 34], [0, 5.05, -4], darkMaterial, { cast: false });
 
+// A wine-red runway carpet leads visitors from the entrance to the central exhibit.
+function createRunwayTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 256; canvas.height = 1024;
+  const ctx = canvas.getContext("2d");
+  const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+  gradient.addColorStop(0, "#501b1e");
+  gradient.addColorStop(.16, "#76252a");
+  gradient.addColorStop(.5, "#8f3034");
+  gradient.addColorStop(.84, "#76252a");
+  gradient.addColorStop(1, "#501b1e");
+  ctx.fillStyle = gradient; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.globalAlpha = .16;
+  for (let y = 0; y < canvas.height; y += 9) {
+    ctx.fillStyle = y % 18 === 0 ? "#f2d0b2" : "#22080a";
+    ctx.fillRect(0, y, canvas.width, 1);
+  }
+  ctx.globalAlpha = .13;
+  for (let x = 10; x < canvas.width; x += 17) ctx.fillRect(x, 0, 1, canvas.height);
+  ctx.globalAlpha = 1;
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(1, 3.8);
+  texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return texture;
+}
+
+const runwayMaterial = new THREE.MeshStandardMaterial({
+  map: createRunwayTexture(), color: 0xffffff, roughness: .94, metalness: 0
+});
+box("runway carpet entrance", [4.2, .045, 12.2], [0, .035, 6.25], runwayMaterial, { cast: false, receive: true });
+box("runway carpet gallery", [4.2, .045, 6.15], [0, .035, -5.63], runwayMaterial, { cast: false, receive: true });
+
+// Slim brass edging makes the carpet read like a fashion-show runway.
+for (const x of [-2.15, 2.15]) {
+  box("runway brass edge", [.07, .055, 12.2], [x, .047, 6.25], goldMaterial, { cast: false });
+  box("runway brass edge", [.07, .055, 6.15], [x, .047, -5.63], goldMaterial, { cast: false });
+}
+
+// Low guide lights frame the runway without blocking movement.
+const runwayLightMaterial = new THREE.MeshBasicMaterial({ color: 0xe2bd68 });
+for (const z of [11, 8.5, 6, 3.5, 1, -3.3, -5.7, -8]) {
+  for (const x of [-2.34, 2.34]) {
+    const guide = new THREE.Mesh(new THREE.CylinderGeometry(.065, .065, .025, 20), runwayLightMaterial);
+    guide.position.set(x, .075, z); scene.add(guide);
+  }
+}
+
 // Outer shell, with a south entrance opening.
 box("west outer wall", [.3, 5, 34], [-15, 2.5, -4], wallMaterial, { collider: true });
 box("east outer wall", [.3, 5, 34], [15, 2.5, -4], wallMaterial, { collider: true });
