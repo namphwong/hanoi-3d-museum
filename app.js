@@ -286,7 +286,6 @@ document.querySelector("#close-help").addEventListener("click", () => document.q
 document.querySelector("#map-button").addEventListener("click", e => { e.currentTarget.classList.toggle("active"); document.querySelector("#minimap").classList.toggle("hidden"); });
 document.querySelector("#fullscreen-button").addEventListener("click", () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen());
 const audioController = initAudio({ soundButton: document.querySelector("#sound-button") });
-const endDialog = document.querySelector("#tour-complete-dialog");
 const tourTimerButton = document.querySelector("#tour-timer");
 const tourTimeSettings = document.querySelector("#tour-time-settings");
 const tourDurationInput = document.querySelector("#tour-duration");
@@ -297,11 +296,6 @@ const tourTimer = initTourTimer({
   onFinalMinute: () => audioController.enterFinalMinute(),
   onEnd: () => {
     tourRunning = false;
-    audioController.endTour();
-    controls.unlock();
-    keys.clear();
-    document.querySelectorAll("dialog[open]").forEach(dialog => dialog.close());
-    endDialog.showModal();
   }
 });
 
@@ -320,7 +314,6 @@ function closeTourTimeSettings() {
 function startTour() {
   const welcomeDialog = document.querySelector("#welcome-dialog");
   if (welcomeDialog.open) welcomeDialog.close();
-  if (endDialog.open) endDialog.close();
   tourRunning = true;
   audioController.startTour();
   tourTimer.start(selectedTourDurationSeconds);
@@ -357,7 +350,6 @@ document.addEventListener("click", event => {
 });
 
 document.querySelector("#enter-button").addEventListener("click", startTour);
-document.querySelector("#restart-tour").addEventListener("click", startTour);
 
 document.querySelectorAll("[data-move]").forEach(button => {
   const codes = {forward:"KeyW",backward:"KeyS",left:"KeyA",right:"KeyD"}; const code = codes[button.dataset.move];
