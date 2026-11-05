@@ -1,6 +1,12 @@
 import * as THREE from "three";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 import { artworks, museumConfig } from "./gallery-data.js";
+import { initAudio } from "./audio-manager.js";
+import { createPastRoom } from "./rooms/past.js";
+import { createFutureRoom } from "./rooms/future.js";
+import { createEntranceRoom } from "./rooms/entrance.js";
+import { createFusionRoom } from "./rooms/fusion.js";
+import { createHallRoom } from "./rooms/hall.js";
 
 const app = document.querySelector("#app");
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
@@ -138,6 +144,17 @@ function addStripLight(x, z, color = 0xfff2d8) {
 [-11, -4, 3, 10].forEach(z => { addStripLight(-9.5, z); addStripLight(0, z); addStripLight(9.5, z); });
 addStripLight(-6, -16); addStripLight(0, -16); addStripLight(6, -16);
 
+// Room-specific work stays in separate modules so both branches can develop in parallel.
+const roomContext = {
+  THREE, scene, box, addStripLight,
+  materials: { wall: wallMaterial, concrete: concreteMaterial, dark: darkMaterial, gold: goldMaterial }
+};
+createPastRoom(roomContext);
+createFutureRoom(roomContext);
+createEntranceRoom(roomContext);
+createFusionRoom(roomContext);
+createHallRoom(roomContext);
+
 function makePlaceholderTexture(art) {
   const canvas = document.createElement("canvas"); canvas.width = 1200; canvas.height = 760;
   const ctx = canvas.getContext("2d");
@@ -226,7 +243,10 @@ document.querySelector("#info-button").addEventListener("click", () => { control
 document.querySelector("#close-help").addEventListener("click", () => document.querySelector("#help-dialog").close());
 document.querySelector("#map-button").addEventListener("click", e => { e.currentTarget.classList.toggle("active"); document.querySelector("#minimap").classList.toggle("hidden"); });
 document.querySelector("#fullscreen-button").addEventListener("click", () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen());
-document.querySelector("#sound-button").addEventListener("click", e => e.currentTarget.classList.toggle("active"));
+initAudio({
+  enterButton: document.querySelector("#enter-button"),
+  soundButton: document.querySelector("#sound-button")
+});
 
 document.querySelectorAll("[data-move]").forEach(button => {
   const codes = {forward:"KeyW",backward:"KeyS",left:"KeyA",right:"KeyD"}; const code = codes[button.dataset.move];
