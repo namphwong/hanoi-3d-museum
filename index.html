@@ -25,8 +25,14 @@
       </a>
       <div class="room-label"><span id="room-kicker">ENTRANCE</span><strong id="room-name">Main Hall</strong></div>
       <div class="topbar-actions">
-        <div id="tour-timer" class="tour-timer" aria-label="Thời gian tham quan còn lại">
-          <span>TOUR TIME</span><strong id="tour-time">06:00</strong>
+        <div class="tour-time-control">
+          <button id="tour-timer" class="tour-timer" type="button" aria-label="Thời gian tham quan còn lại; nhấn để điều chỉnh" aria-expanded="false" aria-controls="tour-time-settings">
+            <span>TOUR TIME</span><strong id="tour-time">06:00</strong>
+          </button>
+          <form id="tour-time-settings" class="tour-time-settings" hidden>
+            <label for="tour-duration">THỜI LƯỢNG (PHÚT)</label>
+            <div><input id="tour-duration" type="number" min="1" max="60" step="1" value="6" inputmode="numeric" /><button type="submit">ÁP DỤNG</button></div>
+          </form>
         </div>
         <button id="info-button" class="icon-button" aria-label="Hướng dẫn">?</button>
       </div>
@@ -70,10 +76,6 @@
         <div><kbd>CHUỘT</kbd><span>Nhìn quanh</span></div>
         <div><kbd>ESC</kbd><span>Thả chuột</span></div>
       </div>
-      <label class="tour-duration-field">
-        <span>THỜI LƯỢNG TOUR</span>
-        <span class="tour-duration-input"><input data-tour-duration type="number" min="1" max="60" step="1" value="6" inputmode="numeric" aria-label="Thời lượng tour tính bằng phút" /><small>phút</small></span>
-      </label>
       <button id="enter-button" class="primary-button">BẮT ĐẦU THAM QUAN <span>→</span></button>
     </dialog>
 
@@ -100,10 +102,6 @@
       <div class="dialog-eyebrow">TOUR COMPLETE</div>
       <h2>Hành trình đã hoàn thành</h2>
       <p>Thời gian tham quan đã kết thúc. Cảm ơn bạn đã tham quan bảo tàng.</p>
-      <label class="tour-duration-field">
-        <span>THỜI LƯỢNG LẦN TIẾP THEO</span>
-        <span class="tour-duration-input"><input data-tour-duration type="number" min="1" max="60" step="1" value="6" inputmode="numeric" aria-label="Thời lượng tour tiếp theo tính bằng phút" /><small>phút</small></span>
-      </label>
       <button id="restart-tour" class="primary-button">THAM QUAN LẠI <span>→</span></button>
     </dialog>
 

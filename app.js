@@ -287,10 +287,16 @@ document.querySelector("#map-button").addEventListener("click", e => { e.current
 document.querySelector("#fullscreen-button").addEventListener("click", () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen());
 const audioController = initAudio({ soundButton: document.querySelector("#sound-button") });
 const endDialog = document.querySelector("#tour-complete-dialog");
+const tourTimerButton = document.querySelector("#tour-timer");
+const tourTimeSettings = document.querySelector("#tour-time-settings");
+const tourDurationInput = document.querySelector("#tour-duration");
+let selectedTourDurationSeconds = 6 * 60;
+let tourRunning = false;
 const tourTimer = initTourTimer({
   timerElement: document.querySelector("#tour-time"),
   onFinalMinute: () => audioController.enterFinalMinute(),
   onEnd: () => {
+    tourRunning = false;
     audioController.endTour();
     controls.unlock();
     keys.clear();
@@ -299,26 +305,57 @@ const tourTimer = initTourTimer({
   }
 });
 
-const durationInputs = [...document.querySelectorAll("[data-tour-duration]")];
-
-function readTourDuration(sourceInput) {
-  const parsedMinutes = Number.parseInt(sourceInput?.value, 10);
+function readTourDuration() {
+  const parsedMinutes = Number.parseInt(tourDurationInput.value, 10);
   const minutes = Math.min(60, Math.max(1, Number.isFinite(parsedMinutes) ? parsedMinutes : 6));
-  durationInputs.forEach(input => { input.value = String(minutes); });
+  tourDurationInput.value = String(minutes);
   return minutes * 60;
 }
 
-function startTour(event) {
-  const sourceInput = event.currentTarget.closest("dialog")?.querySelector("[data-tour-duration]");
+function closeTourTimeSettings() {
+  tourTimeSettings.hidden = true;
+  tourTimerButton.setAttribute("aria-expanded", "false");
+}
+
+function startTour() {
   const welcomeDialog = document.querySelector("#welcome-dialog");
   if (welcomeDialog.open) welcomeDialog.close();
   if (endDialog.open) endDialog.close();
+  tourRunning = true;
   audioController.startTour();
-  tourTimer.start(readTourDuration(sourceInput));
+  tourTimer.start(selectedTourDurationSeconds);
   controls.lock();
 }
 
-durationInputs.forEach(input => input.addEventListener("change", () => readTourDuration(input)));
+tourTimerButton.addEventListener("click", event => {
+  event.stopPropagation();
+  if (controls.isLocked) controls.unlock();
+  const shouldOpen = tourTimeSettings.hidden;
+  tourTimeSettings.hidden = !shouldOpen;
+  tourTimerButton.setAttribute("aria-expanded", String(shouldOpen));
+  if (shouldOpen) {
+    tourDurationInput.focus();
+    tourDurationInput.select();
+  }
+});
+
+tourTimeSettings.addEventListener("submit", event => {
+  event.preventDefault();
+  selectedTourDurationSeconds = readTourDuration();
+  closeTourTimeSettings();
+  if (tourRunning) {
+    audioController.startTour();
+    tourTimer.start(selectedTourDurationSeconds);
+    controls.lock();
+  } else {
+    tourTimer.setDuration(selectedTourDurationSeconds);
+  }
+});
+
+document.addEventListener("click", event => {
+  if (!event.target.closest(".tour-time-control")) closeTourTimeSettings();
+});
+
 document.querySelector("#enter-button").addEventListener("click", startTour);
 document.querySelector("#restart-tour").addEventListener("click", startTour);
 

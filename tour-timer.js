@@ -35,6 +35,9 @@ export function initTourTimer({
     intervalId = null;
   };
 
+  const normalizeDuration = durationSeconds =>
+    Math.max(1, Math.round(Number(durationSeconds) || TOUR_DURATION_SECONDS));
+
   const update = () => {
     if (deadline === null) return;
     remainingSeconds = Math.max(0, Math.ceil((deadline - now()) / 1000));
@@ -54,7 +57,7 @@ export function initTourTimer({
   };
 
   const start = (durationSeconds = TOUR_DURATION_SECONDS) => {
-    const normalizedDuration = Math.max(1, Math.round(Number(durationSeconds) || TOUR_DURATION_SECONDS));
+    const normalizedDuration = normalizeDuration(durationSeconds);
     stopInterval();
     remainingSeconds = normalizedDuration;
     finalMinuteStarted = false;
@@ -67,6 +70,13 @@ export function initTourTimer({
   return {
     start,
     update,
+    setDuration: durationSeconds => {
+      stopInterval();
+      deadline = null;
+      remainingSeconds = normalizeDuration(durationSeconds);
+      finalMinuteStarted = false;
+      render();
+    },
     stop: () => {
       stopInterval();
       deadline = null;
