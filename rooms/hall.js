@@ -1,28 +1,33 @@
 // OWNER: feature/fusion-hall-audio
 export function createHallRoom({ THREE, scene, box, materials }) {
-  // Keep the station schedule squarely on the hall's centreline so it reads as
-  // the main orientation board when visitors arrive from the entrance.
-  const scheduleSupport = new THREE.Group();
-  scheduleSupport.name = "hall schedule support group";
-  scheduleSupport.position.set(0, 0, 4.8);
+  function createDisplaySupport(name, z) {
+    const displaySupport = new THREE.Group();
+    displaySupport.name = name;
+    displaySupport.position.set(0, 0, z);
 
-  const base = new THREE.Mesh(new THREE.BoxGeometry(5.15, .26, .68), materials.dark);
-  base.position.y = .13;
-  base.castShadow = true;
-  base.receiveShadow = true;
-  scheduleSupport.add(base);
+    const base = new THREE.Mesh(new THREE.BoxGeometry(5.15, .26, .68), materials.dark);
+    base.position.y = .13;
+    base.castShadow = true;
+    base.receiveShadow = true;
+    displaySupport.add(base);
 
-  const baseTrim = new THREE.Mesh(new THREE.BoxGeometry(5.25, .045, .78), materials.gold);
-  baseTrim.position.y = .285;
-  scheduleSupport.add(baseTrim);
+    const baseTrim = new THREE.Mesh(new THREE.BoxGeometry(5.25, .045, .78), materials.gold);
+    baseTrim.position.y = .285;
+    displaySupport.add(baseTrim);
 
-  for (const x of [-2.12, 2.12]) {
-    const support = new THREE.Mesh(new THREE.BoxGeometry(.12, .48, .12), materials.gold);
-    support.position.set(x, .52, 0);
-    support.castShadow = true;
-    scheduleSupport.add(support);
+    for (const x of [-2.12, 2.12]) {
+      const support = new THREE.Mesh(new THREE.BoxGeometry(.12, .48, .12), materials.gold);
+      support.position.set(x, .52, 0);
+      support.castShadow = true;
+      displaySupport.add(support);
+    }
+    scene.add(displaySupport);
   }
-  scene.add(scheduleSupport);
+
+  // Two centred displays lead visitors naturally from the introduction to the
+  // station rotation board without changing the side circulation routes.
+  createDisplaySupport("hall introduction support group", 4.8);
+  createDisplaySupport("hall schedule support group", 1.4);
 
   // A compact low-poly Đông Sơn drum gives the hall a Vietnamese focal point.
   const bronze = new THREE.MeshStandardMaterial({ color: 0x8b5a24, roughness: .48, metalness: .65 });
