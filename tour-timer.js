@@ -1,4 +1,4 @@
-export const TOUR_DURATION_SECONDS = 5 * 60;
+export const TOUR_DURATION_SECONDS = 6 * 60;
 export const FINAL_MINUTE_SECONDS = 60;
 
 export function formatTourTime(seconds) {
@@ -53,11 +53,12 @@ export function initTourTimer({
     }
   };
 
-  const start = () => {
+  const start = (durationSeconds = TOUR_DURATION_SECONDS) => {
+    const normalizedDuration = Math.max(1, Math.round(Number(durationSeconds) || TOUR_DURATION_SECONDS));
     stopInterval();
-    remainingSeconds = TOUR_DURATION_SECONDS;
+    remainingSeconds = normalizedDuration;
     finalMinuteStarted = false;
-    deadline = now() + TOUR_DURATION_SECONDS * 1000;
+    deadline = now() + normalizedDuration * 1000;
     render();
     intervalId = setIntervalFn(update, 200);
   };

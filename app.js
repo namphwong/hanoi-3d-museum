@@ -299,15 +299,26 @@ const tourTimer = initTourTimer({
   }
 });
 
-function startTour() {
+const durationInputs = [...document.querySelectorAll("[data-tour-duration]")];
+
+function readTourDuration(sourceInput) {
+  const parsedMinutes = Number.parseInt(sourceInput?.value, 10);
+  const minutes = Math.min(60, Math.max(1, Number.isFinite(parsedMinutes) ? parsedMinutes : 6));
+  durationInputs.forEach(input => { input.value = String(minutes); });
+  return minutes * 60;
+}
+
+function startTour(event) {
+  const sourceInput = event.currentTarget.closest("dialog")?.querySelector("[data-tour-duration]");
   const welcomeDialog = document.querySelector("#welcome-dialog");
   if (welcomeDialog.open) welcomeDialog.close();
   if (endDialog.open) endDialog.close();
   audioController.startTour();
-  tourTimer.start();
+  tourTimer.start(readTourDuration(sourceInput));
   controls.lock();
 }
 
+durationInputs.forEach(input => input.addEventListener("change", () => readTourDuration(input)));
 document.querySelector("#enter-button").addEventListener("click", startTour);
 document.querySelector("#restart-tour").addEventListener("click", startTour);
 
