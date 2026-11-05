@@ -24,5 +24,17 @@ export const pastArtworks = [
     position: [-14.82, 2.45, -1.1],
     rotation: [0, Math.PI / 2, 0],
     size: [2.25, 2.8125]
+  },
+  {
+    id: "past-03",
+    section: "PAST GALLERY · STATION 1",
+    title: "Verb + V-ing",
+    description: "Bảng quy tắc ngữ pháp của Station 1 trong hành trình Time-travelling Museum.",
+    meta: "STATION 1 · GRAMMAR RULE",
+    image: "./assets/artworks/past/past-03.png",
+    accent: "#8f4f38",
+    position: [-14.82, 2.4, 6.4],
+    rotation: [0, Math.PI / 2, 0],
+    size: [2.1, 2.625]
   }
 ];
