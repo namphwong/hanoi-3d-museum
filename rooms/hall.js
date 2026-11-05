@@ -1,10 +1,10 @@
 // OWNER: feature/fusion-hall-audio
 export function createHallRoom({ THREE, scene, box, materials }) {
-  // The angled schedule is visible on arrival but stays outside the central runway.
+  // Keep the station schedule squarely on the hall's centreline so it reads as
+  // the main orientation board when visitors arrive from the entrance.
   const scheduleSupport = new THREE.Group();
   scheduleSupport.name = "hall schedule support group";
-  scheduleSupport.position.set(-3.8, 0, 4.8);
-  scheduleSupport.rotation.y = Math.PI / 3;
+  scheduleSupport.position.set(0, 0, 4.8);
 
   const base = new THREE.Mesh(new THREE.BoxGeometry(5.15, .26, .68), materials.dark);
   base.position.y = .13;
