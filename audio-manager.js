@@ -14,7 +14,8 @@ export function initAudio({ soundButton, AudioConstructor = Audio }) {
     audio.preload = audioConfig.preload;
   }
 
-  let enabled = true;
+  // Browsers should never start museum audio without a deliberate user action.
+  let enabled = false;
   let phase = "idle";
   const completed = { flute: false, dramatic: false };
   const playRequests = { flute: null, dramatic: null };
@@ -51,14 +52,16 @@ export function initAudio({ soundButton, AudioConstructor = Audio }) {
     }
   };
 
-  const resetTrack = audio => {
+  const resetTrack = name => {
+    const audio = tracks[name];
     audio.pause();
     audio.currentTime = 0;
+    audio.volume = audioConfig[name].volume;
   };
 
   const startTour = () => {
-    resetTrack(tracks.flute);
-    resetTrack(tracks.dramatic);
+    resetTrack("flute");
+    resetTrack("dramatic");
     completed.flute = false;
     completed.dramatic = false;
     phase = "flute";
@@ -68,12 +71,13 @@ export function initAudio({ soundButton, AudioConstructor = Audio }) {
   const enterFinalMinute = () => {
     if (phase === "dramatic" || phase === "ended") return;
     tracks.flute.pause();
-    resetTrack(tracks.dramatic);
+    resetTrack("dramatic");
     phase = "dramatic";
     playCurrent();
   };
 
   const endTour = () => {
+    enabled = false;
     phase = "ended";
     pauseAll();
     updateButton();
@@ -84,6 +88,16 @@ export function initAudio({ soundButton, AudioConstructor = Audio }) {
     if (enabled) playCurrent();
     else pauseAll();
     updateButton();
+  });
+
+  // Fade the opening ambience smoothly instead of cutting it off at the end.
+  tracks.flute.addEventListener("timeupdate", () => {
+    const audio = tracks.flute;
+    const fadeOutSeconds = audioConfig.flute.fadeOutSeconds ?? 8;
+    if (!Number.isFinite(audio.duration) || audio.duration <= 0 || fadeOutSeconds <= 0) return;
+    const remainingSeconds = Math.max(0, audio.duration - audio.currentTime);
+    const fadeRatio = Math.min(1, remainingSeconds / fadeOutSeconds);
+    audio.volume = audioConfig.flute.volume * fadeRatio;
   });
 
   for (const [name, audio] of Object.entries(tracks)) {

@@ -295,7 +295,8 @@ const tourTimer = initTourTimer({
   timerElement: document.querySelector("#tour-time"),
   onFinalMinute: () => audioController.enterFinalMinute(),
   onEnd: () => {
-    tourRunning = false;
+    // The visitor can keep exploring; only the timer and its alert audio stop.
+    audioController.endTour();
   }
 });
 
