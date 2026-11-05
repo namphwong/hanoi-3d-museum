@@ -16,7 +16,8 @@ export const artworks = [
 
 export const museumConfig = {
   title: "HANOI THEN & NOW",
-  startPosition: [0, 1.7, 7.2],
+  // Start at the entrance end of the runway so the hall reads from near to far.
+  startPosition: [0, 1.7, 11.6],
   startRotationY: 0,
   moveSpeed: 4.6,
   eyeHeight: 1.7
