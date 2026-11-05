@@ -22,7 +22,7 @@ export const hallArtworks = [
     meta: "ACTIVITY SCHEDULE · 3 ROUNDS",
     image: "./assets/artworks/hall/station-rotation.png",
     accent: "#6b4034",
-    position: [0, 2, 0],
+    position: [0, 2, -1.4],
     rotation: [0, 0, 0],
     size: [4.8, 2.04],
     doubleSided: true,

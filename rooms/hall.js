@@ -31,7 +31,7 @@ export function createHallRoom({ THREE, scene, box, materials }) {
   }
 
   // The schedule remains freestanding farther along the centreline.
-  createDisplaySupport("hall schedule support group", 0);
+  createDisplaySupport("hall schedule support group", -1.4);
 
   // A compact low-poly Đông Sơn drum gives the hall a Vietnamese focal point.
   const bronze = new THREE.MeshStandardMaterial({ color: 0x8b5a24, roughness: .48, metalness: .65 });
