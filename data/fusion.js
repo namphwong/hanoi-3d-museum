@@ -3,25 +3,29 @@ export const fusionArtworks = [
   {
     id: "fusion-01",
     section: "FUSION GALLERY",
-    title: "Where Times Meet",
-    description: "Vị trí dành sẵn cho nội dung kết nối quá khứ và tương lai.",
-    meta: "PLACEHOLDER · IMAGE 05",
-    image: null,
-    accent: "#a88b3d",
-    position: [-6, 2.35, -15.82],
+    title: "The Time-travelling Museum",
+    description: "Mở đầu Station 3, nơi truyền thống gặp hiện đại và người học khám phá cách dùng động từ theo sau bởi to V hoặc V-ing.",
+    meta: "STATION 3 · FUSION INTRODUCTION",
+    image: "./assets/artworks/fusion/fusion-intro.png",
+    accent: "#ff006f",
+    position: [-4.1, 2.48, -15.2],
     rotation: [0, 0, 0],
-    size: [3.5, 2.15]
+    size: [2.45, 3.46],
+    doubleSided: true,
+    collider: true
   },
   {
     id: "fusion-02",
     section: "FUSION GALLERY",
-    title: "New Traditions",
-    description: "Vị trí dành sẵn cho ảnh thứ hai của khu Fusion Gallery.",
-    meta: "PLACEHOLDER · IMAGE 06",
-    image: null,
-    accent: "#826d35",
-    position: [6, 2.35, -15.82],
+    title: "Verb + to V / V-ing",
+    description: "Hoạt động phân loại động từ và hoàn thành các tình huống kết nối lối sống Việt Nam trong quá khứ với hiện tại.",
+    meta: "STATION 3 · LEARNING ACTIVITY",
+    image: "./assets/artworks/fusion/fusion-activity.png",
+    accent: "#ff006f",
+    position: [4.1, 2.48, -15.2],
     rotation: [0, 0, 0],
-    size: [3.5, 2.15]
+    size: [2.45, 3.46],
+    doubleSided: true,
+    collider: true
   }
 ];
