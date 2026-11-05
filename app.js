@@ -32,6 +32,7 @@ const controls = new PointerLockControls(camera, renderer.domElement);
 controls.pointerSpeed = 0.72;
 const clock = new THREE.Clock();
 const keys = new Set();
+const moveVelocity = new THREE.Vector2();
 const colliders = [];
 const artworkMeshes = [];
 const textureLoader = new THREE.TextureLoader();
@@ -207,17 +208,42 @@ function playerCollides(position) {
 }
 
 function updateMovement(delta) {
-  if (!controls.isLocked) return;
+  if (!controls.isLocked) {
+    moveVelocity.set(0, 0);
+    return;
+  }
   const prev = camera.position.clone();
-  const speed = museumConfig.moveSpeed * delta;
   const forward = keys.has("KeyW") || keys.has("ArrowUp");
   const back = keys.has("KeyS") || keys.has("ArrowDown");
   const left = keys.has("KeyA") || keys.has("ArrowLeft");
   const right = keys.has("KeyD") || keys.has("ArrowRight");
-  if (forward) controls.moveForward(speed); if (back) controls.moveForward(-speed);
-  if (left) controls.moveRight(-speed); if (right) controls.moveRight(speed);
+  let forwardInput = Number(forward) - Number(back);
+  let rightInput = Number(right) - Number(left);
+  const inputLength = Math.hypot(forwardInput, rightInput);
+  if (inputLength > 1) {
+    forwardInput /= inputLength;
+    rightInput /= inputLength;
+  }
+
+  const response = 1 - Math.exp(-(inputLength ? 18 : 12) * delta);
+  moveVelocity.x += (rightInput * museumConfig.moveSpeed - moveVelocity.x) * response;
+  moveVelocity.y += (forwardInput * museumConfig.moveSpeed - moveVelocity.y) * response;
+
+  controls.moveForward(moveVelocity.y * delta);
+  controls.moveRight(moveVelocity.x * delta);
   camera.position.y = museumConfig.eyeHeight;
-  if (playerCollides(camera.position)) camera.position.copy(prev);
+
+  if (playerCollides(camera.position)) {
+    const desired = camera.position.clone();
+    camera.position.copy(prev);
+    camera.position.y = museumConfig.eyeHeight;
+
+    const xCandidate = new THREE.Vector3(desired.x, museumConfig.eyeHeight, prev.z);
+    if (!playerCollides(xCandidate)) camera.position.copy(xCandidate);
+
+    const zCandidate = new THREE.Vector3(camera.position.x, museumConfig.eyeHeight, desired.z);
+    if (!playerCollides(zCandidate)) camera.position.copy(zCandidate);
+  }
 }
 
 function currentRoom() {
