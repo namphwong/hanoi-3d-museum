@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#111418" />
+    <meta name="description" content="Bảo tàng 3D tương tác – Past, Future & Fusion Gallery" />
+    <title>Hanoi — Then & Now | 3D Museum</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app" aria-label="Không gian bảo tàng 3D"></div>
+
+    <div id="loading" class="loading" role="status" aria-live="polite">
+      <div class="loading-mark" aria-hidden="true"></div>
+      <p>Đang mở cửa bảo tàng</p>
+      <div class="loading-line"><span></span></div>
+    </div>
+
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Về điểm bắt đầu">
+        <span class="brand-mark">H</span>
+        <span><strong>HANOI</strong><small>THEN &amp; NOW</small></span>
+      </a>
+      <div class="room-label"><span id="room-kicker">ENTRANCE</span><strong id="room-name">Main Hall</strong></div>
+      <button id="info-button" class="icon-button" aria-label="Hướng dẫn">?</button>
+    </header>
+
+    <aside class="toolbar" aria-label="Công cụ">
+      <button id="map-button" class="icon-button active" aria-label="Ẩn hoặc hiện bản đồ">⌁</button>
+      <button id="fullscreen-button" class="icon-button" aria-label="Toàn màn hình">⛶</button>
+      <button id="sound-button" class="icon-button" aria-label="Bật hoặc tắt âm thanh">♪</button>
+    </aside>
+
+    <div id="crosshair" class="crosshair" aria-hidden="true"><span></span></div>
+    <p id="interaction-hint" class="interaction-hint">Nhấp để bắt đầu tham quan</p>
+
+    <section id="minimap" class="minimap" aria-label="Sơ đồ bảo tàng">
+      <div class="map-title">FLOOR 01 <span>MAP</span></div>
+      <div class="map-grid">
+        <div class="map-room fusion">FUSION</div>
+        <div class="map-room past">PAST</div>
+        <div class="map-room hall">HALL</div>
+        <div class="map-room future">FUTURE</div>
+        <div id="map-player" class="map-player" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <div id="mobile-controls" class="mobile-controls" aria-label="Điều khiển trên thiết bị di động">
+      <div class="dpad">
+        <button data-move="forward" aria-label="Đi tới">▲</button>
+        <button data-move="left" aria-label="Sang trái">◀</button>
+        <button data-move="backward" aria-label="Đi lùi">▼</button>
+        <button data-move="right" aria-label="Sang phải">▶</button>
+      </div>
+      <span>Vuốt màn hình để nhìn quanh</span>
+    </div>
+
+    <dialog id="welcome-dialog" class="museum-dialog" open>
+      <div class="dialog-eyebrow">VIRTUAL EXHIBITION · 2026</div>
+      <h1>HANOI<br /><em>THEN &amp; NOW</em></h1>
+      <p>Một không gian nền gồm ba phòng trưng bày. Bạn có thể thay toàn bộ tác phẩm và nội dung sau này mà không cần sửa kiến trúc 3D.</p>
+      <div class="controls-guide">
+        <div><kbd>W A S D</kbd><span>Di chuyển</span></div>
+        <div><kbd>CHUỘT</kbd><span>Nhìn quanh</span></div>
+        <div><kbd>ESC</kbd><span>Thả chuột</span></div>
+      </div>
+      <button id="enter-button" class="primary-button">BẮT ĐẦU THAM QUAN <span>→</span></button>
+    </dialog>
+
+    <dialog id="artwork-dialog" class="artwork-dialog">
+      <button id="close-artwork" class="dialog-close" aria-label="Đóng">×</button>
+      <div id="artwork-preview" class="artwork-preview"></div>
+      <div class="artwork-copy">
+        <span id="artwork-section"></span>
+        <h2 id="artwork-title"></h2>
+        <p id="artwork-description"></p>
+        <small id="artwork-meta"></small>
+      </div>
+    </dialog>
+
+    <dialog id="help-dialog" class="museum-dialog help-dialog">
+      <button id="close-help" class="dialog-close" aria-label="Đóng">×</button>
+      <div class="dialog-eyebrow">HƯỚNG DẪN</div>
+      <h2>Khám phá không gian</h2>
+      <p>Dùng WASD/phím mũi tên để di chuyển, rê chuột để nhìn. Khi tâm ngắm đổi màu, nhấp để xem tác phẩm. Trên điện thoại, dùng cụm phím và vuốt trực tiếp trên màn hình.</p>
+      <p class="muted">Ảnh và nội dung mẫu được khai báo trong <code>gallery-data.js</code>.</p>
+    </dialog>
+
+    <noscript>Trang này cần JavaScript để hiển thị bảo tàng 3D.</noscript>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
