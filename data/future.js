@@ -10,7 +10,7 @@ export const futureArtworks = [
     meta: "",
     image: "./assets/artworks/future/future-task-01.png",
     accent: "#ff648f",
-    position: [14.82, 2.3, 5.6],
+    position: [14.82, 2.3, -1.3],
     rotation: [0, -Math.PI / 2, 0],
     size: [2.22, 1.85]
   },
@@ -34,7 +34,7 @@ export const futureArtworks = [
     meta: "",
     image: "./assets/artworks/future/future-task-03.png",
     accent: "#91bdd7",
-    position: [14.82, 2.3, -1.3],
+    position: [14.82, 2.3, 5.6],
     rotation: [0, -Math.PI / 2, 0],
     size: [1.88, 1.85]
   },
