@@ -33,6 +33,10 @@ export function createFusionRoom({ THREE, scene, box, materials }) {
 
   // A symbolic final pathway continues behind the exhibits without changing
   // navigation or adding an interactive door.
+  box("fusion carpet connector", [2.2, .026, 7], [0, .058, -12.1], exitCarpetMaterial, { cast: false, receive: true });
+  for (const x of [-1.13, 1.13]) {
+    box("fusion connector trim", [.06, .032, 7], [x, .061, -12.1], materials.gold, { cast: false });
+  }
   box("fusion exit carpet", [2.2, .025, 4.9], [0, .055, -18], exitCarpetMaterial, { cast: false, receive: true });
   for (const x of [-1.13, 1.13]) {
     box("fusion exit carpet trim", [.06, .032, 4.9], [x, .061, -18], materials.gold, { cast: false });

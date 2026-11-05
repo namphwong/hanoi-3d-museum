@@ -2,11 +2,13 @@ import * as THREE from "three";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 import { artworks, museumConfig } from "./gallery-data.js";
 import { initAudio } from "./audio-manager.js";
+import { initTourTimer } from "./tour-timer.js";
 import { createPastRoom } from "./rooms/past.js";
 import { createFutureRoom } from "./rooms/future.js";
 import { createEntranceRoom } from "./rooms/entrance.js";
 import { createFusionRoom } from "./rooms/fusion.js";
 import { createHallRoom } from "./rooms/hall.js";
+import { createOverviewGallery } from "./rooms/overview.js";
 
 const app = document.querySelector("#app");
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
@@ -32,6 +34,7 @@ const controls = new PointerLockControls(camera, renderer.domElement);
 controls.pointerSpeed = 0.72;
 const clock = new THREE.Clock();
 const keys = new Set();
+const moveVelocity = new THREE.Vector2();
 const colliders = [];
 const artworkMeshes = [];
 const textureLoader = new THREE.TextureLoader();
@@ -154,6 +157,7 @@ createFutureRoom(roomContext);
 createEntranceRoom(roomContext);
 createFusionRoom(roomContext);
 createHallRoom(roomContext);
+createOverviewGallery(roomContext);
 
 function makePlaceholderTexture(art) {
   const canvas = document.createElement("canvas"); canvas.width = 1200; canvas.height = 760;
@@ -207,17 +211,42 @@ function playerCollides(position) {
 }
 
 function updateMovement(delta) {
-  if (!controls.isLocked) return;
+  if (!controls.isLocked) {
+    moveVelocity.set(0, 0);
+    return;
+  }
   const prev = camera.position.clone();
-  const speed = museumConfig.moveSpeed * delta;
   const forward = keys.has("KeyW") || keys.has("ArrowUp");
   const back = keys.has("KeyS") || keys.has("ArrowDown");
   const left = keys.has("KeyA") || keys.has("ArrowLeft");
   const right = keys.has("KeyD") || keys.has("ArrowRight");
-  if (forward) controls.moveForward(speed); if (back) controls.moveForward(-speed);
-  if (left) controls.moveRight(-speed); if (right) controls.moveRight(speed);
+  let forwardInput = Number(forward) - Number(back);
+  let rightInput = Number(right) - Number(left);
+  const inputLength = Math.hypot(forwardInput, rightInput);
+  if (inputLength > 1) {
+    forwardInput /= inputLength;
+    rightInput /= inputLength;
+  }
+
+  const response = 1 - Math.exp(-(inputLength ? 18 : 12) * delta);
+  moveVelocity.x += (rightInput * museumConfig.moveSpeed - moveVelocity.x) * response;
+  moveVelocity.y += (forwardInput * museumConfig.moveSpeed - moveVelocity.y) * response;
+
+  controls.moveForward(moveVelocity.y * delta);
+  controls.moveRight(moveVelocity.x * delta);
   camera.position.y = museumConfig.eyeHeight;
-  if (playerCollides(camera.position)) camera.position.copy(prev);
+
+  if (playerCollides(camera.position)) {
+    const desired = camera.position.clone();
+    camera.position.copy(prev);
+    camera.position.y = museumConfig.eyeHeight;
+
+    const xCandidate = new THREE.Vector3(desired.x, museumConfig.eyeHeight, prev.z);
+    if (!playerCollides(xCandidate)) camera.position.copy(xCandidate);
+
+    const zCandidate = new THREE.Vector3(camera.position.x, museumConfig.eyeHeight, desired.z);
+    if (!playerCollides(zCandidate)) camera.position.copy(zCandidate);
+  }
 }
 
 function currentRoom() {
@@ -251,16 +280,36 @@ renderer.domElement.addEventListener("click", () => { const hit = updateUI(); if
 addEventListener("keydown", e => keys.add(e.code)); addEventListener("keyup", e => keys.delete(e.code));
 controls.addEventListener("lock", () => document.querySelector("#interaction-hint").classList.remove("hidden"));
 
-document.querySelector("#enter-button").addEventListener("click", () => { document.querySelector("#welcome-dialog").close(); controls.lock(); });
 document.querySelector("#close-artwork").addEventListener("click", () => document.querySelector("#artwork-dialog").close());
 document.querySelector("#info-button").addEventListener("click", () => { controls.unlock(); document.querySelector("#help-dialog").showModal(); });
 document.querySelector("#close-help").addEventListener("click", () => document.querySelector("#help-dialog").close());
 document.querySelector("#map-button").addEventListener("click", e => { e.currentTarget.classList.toggle("active"); document.querySelector("#minimap").classList.toggle("hidden"); });
 document.querySelector("#fullscreen-button").addEventListener("click", () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen());
-initAudio({
-  enterButton: document.querySelector("#enter-button"),
-  soundButton: document.querySelector("#sound-button")
+const audioController = initAudio({ soundButton: document.querySelector("#sound-button") });
+const endDialog = document.querySelector("#tour-complete-dialog");
+const tourTimer = initTourTimer({
+  timerElement: document.querySelector("#tour-time"),
+  onFinalMinute: () => audioController.enterFinalMinute(),
+  onEnd: () => {
+    audioController.endTour();
+    controls.unlock();
+    keys.clear();
+    document.querySelectorAll("dialog[open]").forEach(dialog => dialog.close());
+    endDialog.showModal();
+  }
 });
+
+function startTour() {
+  const welcomeDialog = document.querySelector("#welcome-dialog");
+  if (welcomeDialog.open) welcomeDialog.close();
+  if (endDialog.open) endDialog.close();
+  audioController.startTour();
+  tourTimer.start();
+  controls.lock();
+}
+
+document.querySelector("#enter-button").addEventListener("click", startTour);
+document.querySelector("#restart-tour").addEventListener("click", startTour);
 
 document.querySelectorAll("[data-move]").forEach(button => {
   const codes = {forward:"KeyW",backward:"KeyS",left:"KeyA",right:"KeyD"}; const code = codes[button.dataset.move];

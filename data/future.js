@@ -10,7 +10,7 @@ export const futureArtworks = [
     meta: "",
     image: "./assets/artworks/future/future-task-01.png",
     accent: "#ff648f",
-    position: [14.82, 2.3, -1.3],
+    position: [14.82, 2.3, -3.885],
     rotation: [0, -Math.PI / 2, 0],
     size: [2.22, 1.85]
   },
@@ -22,7 +22,7 @@ export const futureArtworks = [
     meta: "",
     image: "./assets/artworks/future/future-task-02.png",
     accent: "#83a700",
-    position: [14.82, 2.3, 2.0],
+    position: [14.82, 2.3, 0.17],
     rotation: [0, -Math.PI / 2, 0],
     size: [2.89, 1.85]
   },
@@ -34,7 +34,7 @@ export const futureArtworks = [
     meta: "",
     image: "./assets/artworks/future/future-task-03.png",
     accent: "#91bdd7",
-    position: [14.82, 2.3, 5.6],
+    position: [14.82, 2.3, 4.055],
     rotation: [0, -Math.PI / 2, 0],
     size: [1.88, 1.85]
   },

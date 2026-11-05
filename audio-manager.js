@@ -1,61 +1,103 @@
 import { audioConfig } from "./data/audio.js";
 
-// OWNER: feature/fusion-hall-audio
-// Audio starts only after the visitor presses Enter, avoiding browser autoplay blocks.
-export function initAudio({ enterButton, soundButton }) {
-  if (!audioConfig.src) {
-    soundButton.disabled = true;
-    soundButton.setAttribute("aria-pressed", "false");
-    return;
-  }
-
-  const audio = new Audio(audioConfig.src);
-  audio.loop = audioConfig.loop;
-  audio.volume = audioConfig.volume;
-  audio.preload = audioConfig.preload;
-  let enabled = true;
-  let visitorEntered = false;
-  let playRequest = null;
-
-  const updateButton = () => {
-    const playing = enabled && !audio.paused;
-    soundButton.classList.toggle("active", playing);
-    soundButton.setAttribute("aria-pressed", String(playing));
-    soundButton.setAttribute("aria-label", playing ? "Tắt âm thanh" : "Bật âm thanh");
+// Creates exactly two reusable audio elements for the whole page. Phase changes
+// are idempotent, so repeated timer updates can never restart or overlap tracks.
+export function initAudio({ soundButton, AudioConstructor = Audio }) {
+  const tracks = {
+    flute: new AudioConstructor(audioConfig.flute.src),
+    dramatic: new AudioConstructor(audioConfig.dramatic.src)
   };
 
-  const play = async () => {
-    if (!enabled || playRequest) return playRequest;
-    playRequest = audio.play();
+  for (const [name, audio] of Object.entries(tracks)) {
+    audio.loop = false;
+    audio.volume = audioConfig[name].volume;
+    audio.preload = audioConfig.preload;
+  }
+
+  let enabled = true;
+  let phase = "idle";
+  const completed = { flute: false, dramatic: false };
+  const playRequests = { flute: null, dramatic: null };
+
+  const activeTrack = () => tracks[phase] ?? null;
+
+  const updateButton = () => {
+    soundButton.classList.toggle("active", enabled);
+    soundButton.setAttribute("aria-pressed", String(enabled));
+    soundButton.setAttribute("aria-label", enabled ? "Tắt âm thanh" : "Bật âm thanh");
+  };
+
+  const pauseAll = except => {
+    for (const [name, audio] of Object.entries(tracks)) {
+      if (name !== except) audio.pause();
+    }
+  };
+
+  const playCurrent = async () => {
+    const audio = activeTrack();
+    if (!enabled || !audio || completed[phase] || playRequests[phase]) return;
+    pauseAll(phase);
+    if (!audio.paused) return;
+
+    const requestedPhase = phase;
+    playRequests[requestedPhase] = audio.play();
     try {
-      await playRequest;
+      await playRequests[requestedPhase];
     } catch (error) {
-      console.warn("Không thể phát nhạc nền:", error);
+      console.warn(`Không thể phát nhạc ${requestedPhase}:`, error);
     } finally {
-      playRequest = null;
+      playRequests[requestedPhase] = null;
       updateButton();
     }
   };
 
-  updateButton();
+  const resetTrack = audio => {
+    audio.pause();
+    audio.currentTime = 0;
+  };
 
-  enterButton.addEventListener("click", () => {
-    visitorEntered = true;
-    play();
-  });
+  const startTour = () => {
+    resetTrack(tracks.flute);
+    resetTrack(tracks.dramatic);
+    completed.flute = false;
+    completed.dramatic = false;
+    phase = "flute";
+    playCurrent();
+  };
+
+  const enterFinalMinute = () => {
+    if (phase === "dramatic" || phase === "ended") return;
+    tracks.flute.pause();
+    resetTrack(tracks.dramatic);
+    phase = "dramatic";
+    playCurrent();
+  };
+
+  const endTour = () => {
+    phase = "ended";
+    pauseAll();
+    updateButton();
+  };
 
   soundButton.addEventListener("click", () => {
-    enabled = audio.paused;
-    if (enabled && visitorEntered) play();
-    else audio.pause();
+    enabled = !enabled;
+    if (enabled) playCurrent();
+    else pauseAll();
     updateButton();
   });
 
-  audio.addEventListener("play", updateButton);
-  audio.addEventListener("pause", updateButton);
-  audio.addEventListener("error", () => {
-    enabled = false;
-    soundButton.title = "Không tải được nhạc nền";
-    updateButton();
-  });
+  for (const [name, audio] of Object.entries(tracks)) {
+    audio.addEventListener("ended", () => {
+      completed[name] = true;
+      updateButton();
+    });
+    audio.addEventListener("error", () => {
+      completed[name] = true;
+      soundButton.title = `Không tải được nhạc ${name}`;
+      updateButton();
+    });
+  }
+
+  updateButton();
+  return { startTour, enterFinalMinute, endTour };
 }

@@ -24,7 +24,12 @@
         <span><strong>HANOI</strong><small>THEN &amp; NOW</small></span>
       </a>
       <div class="room-label"><span id="room-kicker">ENTRANCE</span><strong id="room-name">Main Hall</strong></div>
-      <button id="info-button" class="icon-button" aria-label="Hướng dẫn">?</button>
+      <div class="topbar-actions">
+        <div id="tour-timer" class="tour-timer" aria-label="Thời gian tham quan còn lại">
+          <span>TOUR TIME</span><strong id="tour-time">05:00</strong>
+        </div>
+        <button id="info-button" class="icon-button" aria-label="Hướng dẫn">?</button>
+      </div>
     </header>
 
     <aside class="toolbar" aria-label="Công cụ">
@@ -58,9 +63,8 @@
     </div>
 
     <dialog id="welcome-dialog" class="museum-dialog" open>
-      <div class="dialog-eyebrow">VIRTUAL EXHIBITION · 2026</div>
-      <h1>HANOI<br /><em>THEN &amp; NOW</em></h1>
-      <p>Một không gian nền gồm ba phòng trưng bày. Bạn có thể thay toàn bộ tác phẩm và nội dung sau này mà không cần sửa kiến trúc 3D.</p>
+      <div class="dialog-eyebrow">TRAN THI PHUONG</div>
+      <h1>VIETNAMESE LIFESTYLES:<br /><em>THEN AND NOW</em></h1>
       <div class="controls-guide">
         <div><kbd>W A S D</kbd><span>Di chuyển</span></div>
         <div><kbd>CHUỘT</kbd><span>Nhìn quanh</span></div>
@@ -86,6 +90,13 @@
       <h2>Khám phá không gian</h2>
       <p>Dùng WASD/phím mũi tên để di chuyển, rê chuột để nhìn. Khi tâm ngắm đổi màu, nhấp để xem tác phẩm. Trên điện thoại, dùng cụm phím và vuốt trực tiếp trên màn hình.</p>
       <p class="muted">Ảnh và nội dung mẫu được khai báo trong <code>gallery-data.js</code>.</p>
+    </dialog>
+
+    <dialog id="tour-complete-dialog" class="museum-dialog tour-complete-dialog">
+      <div class="dialog-eyebrow">TOUR COMPLETE</div>
+      <h2>Hành trình đã hoàn thành</h2>
+      <p>Thời gian tham quan 5 phút đã kết thúc. Cảm ơn bạn đã khám phá Hanoi Then &amp; Now.</p>
+      <button id="restart-tour" class="primary-button">THAM QUAN LẠI <span>→</span></button>
     </dialog>
 
     <noscript>Trang này cần JavaScript để hiển thị bảo tàng 3D.</noscript>
