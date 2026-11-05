@@ -2,11 +2,13 @@ import * as THREE from "three";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 import { artworks, museumConfig } from "./gallery-data.js";
 import { initAudio } from "./audio-manager.js";
+import { initTourTimer } from "./tour-timer.js";
 import { createPastRoom } from "./rooms/past.js";
 import { createFutureRoom } from "./rooms/future.js";
 import { createEntranceRoom } from "./rooms/entrance.js";
 import { createFusionRoom } from "./rooms/fusion.js";
 import { createHallRoom } from "./rooms/hall.js";
+import { createOverviewGallery } from "./rooms/overview.js";
 
 const app = document.querySelector("#app");
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
@@ -155,6 +157,7 @@ createFutureRoom(roomContext);
 createEntranceRoom(roomContext);
 createFusionRoom(roomContext);
 createHallRoom(roomContext);
+createOverviewGallery(roomContext);
 
 function makePlaceholderTexture(art) {
   const canvas = document.createElement("canvas"); canvas.width = 1200; canvas.height = 760;
@@ -277,16 +280,36 @@ renderer.domElement.addEventListener("click", () => { const hit = updateUI(); if
 addEventListener("keydown", e => keys.add(e.code)); addEventListener("keyup", e => keys.delete(e.code));
 controls.addEventListener("lock", () => document.querySelector("#interaction-hint").classList.remove("hidden"));
 
-document.querySelector("#enter-button").addEventListener("click", () => { document.querySelector("#welcome-dialog").close(); controls.lock(); });
 document.querySelector("#close-artwork").addEventListener("click", () => document.querySelector("#artwork-dialog").close());
 document.querySelector("#info-button").addEventListener("click", () => { controls.unlock(); document.querySelector("#help-dialog").showModal(); });
 document.querySelector("#close-help").addEventListener("click", () => document.querySelector("#help-dialog").close());
 document.querySelector("#map-button").addEventListener("click", e => { e.currentTarget.classList.toggle("active"); document.querySelector("#minimap").classList.toggle("hidden"); });
 document.querySelector("#fullscreen-button").addEventListener("click", () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen());
-initAudio({
-  enterButton: document.querySelector("#enter-button"),
-  soundButton: document.querySelector("#sound-button")
+const audioController = initAudio({ soundButton: document.querySelector("#sound-button") });
+const endDialog = document.querySelector("#tour-complete-dialog");
+const tourTimer = initTourTimer({
+  timerElement: document.querySelector("#tour-time"),
+  onFinalMinute: () => audioController.enterFinalMinute(),
+  onEnd: () => {
+    audioController.endTour();
+    controls.unlock();
+    keys.clear();
+    document.querySelectorAll("dialog[open]").forEach(dialog => dialog.close());
+    endDialog.showModal();
+  }
 });
+
+function startTour() {
+  const welcomeDialog = document.querySelector("#welcome-dialog");
+  if (welcomeDialog.open) welcomeDialog.close();
+  if (endDialog.open) endDialog.close();
+  audioController.startTour();
+  tourTimer.start();
+  controls.lock();
+}
+
+document.querySelector("#enter-button").addEventListener("click", startTour);
+document.querySelector("#restart-tour").addEventListener("click", startTour);
 
 document.querySelectorAll("[data-move]").forEach(button => {
   const codes = {forward:"KeyW",backward:"KeyS",left:"KeyA",right:"KeyD"}; const code = codes[button.dataset.move];

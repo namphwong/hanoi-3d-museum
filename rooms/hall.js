@@ -24,40 +24,6 @@ export function createHallRoom({ THREE, scene, box, materials }) {
   }
   scene.add(scheduleSupport);
 
-  // Overview photographs are decorative scene meshes, deliberately excluded
-  // from the shared artwork raycast list and therefore never open a popup.
-  const textureLoader = new THREE.TextureLoader();
-  const overviewFrames = [
-    { image: "./assets/decor/overview/anh5.jpg", position: [-4.62, 2.35, -5.35], rotationY: Math.PI / 2, width: 2.2, height: 1.65 },
-    { image: "./assets/decor/overview/anh2.jpg", position: [-4.62, 2.35, 5.35], rotationY: Math.PI / 2, width: 2.2, height: 1.428 },
-    { image: "./assets/decor/overview/anh10.jpg", position: [4.62, 2.35, -5.35], rotationY: -Math.PI / 2, width: 2.2, height: 1.402 },
-    { image: "./assets/decor/overview/anh6.jpg", position: [4.62, 2.35, 5.35], rotationY: -Math.PI / 2, width: 2.2, height: 1.467 }
-  ];
-
-  for (const overview of overviewFrames) {
-    const group = new THREE.Group();
-    group.position.set(...overview.position);
-    group.rotation.y = overview.rotationY;
-    group.name = `decorative overview ${overview.image}`;
-
-    const frame = new THREE.Mesh(
-      new THREE.BoxGeometry(overview.width + .16, overview.height + .16, .08),
-      materials.dark
-    );
-    frame.castShadow = true;
-    group.add(frame);
-
-    const texture = textureLoader.load(overview.image);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    const picture = new THREE.Mesh(
-      new THREE.PlaneGeometry(overview.width, overview.height),
-      new THREE.MeshStandardMaterial({ map: texture, roughness: .82, metalness: 0 })
-    );
-    picture.position.z = .046;
-    group.add(picture);
-    scene.add(group);
-  }
-
   // A compact low-poly Đông Sơn drum gives the hall a Vietnamese focal point.
   const bronze = new THREE.MeshStandardMaterial({ color: 0x8b5a24, roughness: .48, metalness: .65 });
   const bronzeDark = new THREE.MeshStandardMaterial({ color: 0x4c2d14, roughness: .58, metalness: .5 });

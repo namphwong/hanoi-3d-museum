@@ -24,7 +24,12 @@
         <span><strong>HANOI</strong><small>THEN &amp; NOW</small></span>
       </a>
       <div class="room-label"><span id="room-kicker">ENTRANCE</span><strong id="room-name">Main Hall</strong></div>
-      <button id="info-button" class="icon-button" aria-label="Hướng dẫn">?</button>
+      <div class="topbar-actions">
+        <div id="tour-timer" class="tour-timer" aria-label="Thời gian tham quan còn lại">
+          <span>TOUR TIME</span><strong id="tour-time">05:00</strong>
+        </div>
+        <button id="info-button" class="icon-button" aria-label="Hướng dẫn">?</button>
+      </div>
     </header>
 
     <aside class="toolbar" aria-label="Công cụ">
@@ -86,6 +91,13 @@
       <h2>Khám phá không gian</h2>
       <p>Dùng WASD/phím mũi tên để di chuyển, rê chuột để nhìn. Khi tâm ngắm đổi màu, nhấp để xem tác phẩm. Trên điện thoại, dùng cụm phím và vuốt trực tiếp trên màn hình.</p>
       <p class="muted">Ảnh và nội dung mẫu được khai báo trong <code>gallery-data.js</code>.</p>
+    </dialog>
+
+    <dialog id="tour-complete-dialog" class="museum-dialog tour-complete-dialog">
+      <div class="dialog-eyebrow">TOUR COMPLETE</div>
+      <h2>Hành trình đã hoàn thành</h2>
+      <p>Thời gian tham quan 5 phút đã kết thúc. Cảm ơn bạn đã khám phá Hanoi Then &amp; Now.</p>
+      <button id="restart-tour" class="primary-button">THAM QUAN LẠI <span>→</span></button>
     </dialog>
 
     <noscript>Trang này cần JavaScript để hiển thị bảo tàng 3D.</noscript>
