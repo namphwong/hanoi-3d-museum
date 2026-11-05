@@ -39,5 +39,17 @@ export const fusionArtworks = [
     position: [-3.65, 2.35, -20.66],
     rotation: [0, 0, 0],
     size: [3.2, 1.8]
+  },
+  {
+    id: "fusion-finale-right",
+    section: "FUSION GALLERY · FINAL PATH",
+    title: "Task for KOC",
+    description: "Nhiệm vụ cuối hành trình: xây dựng brochure và TVC ngắn kết nối lối sống Việt Nam xưa và nay.",
+    meta: "TIME-TRAVELLING MUSEUM · FINAL TASK",
+    image: "./assets/artworks/fusion/anhcuoi.jpg",
+    accent: "#9e1f1f",
+    position: [3.65, 2.35, -20.66],
+    rotation: [0, 0, 0],
+    size: [3.2, 1.8]
   }
 ];
