@@ -9,7 +9,7 @@ export const pastArtworks = [
     meta: "",
     image: "./assets/artworks/past/past-01.png",
     accent: "#b76a48",
-    position: [-14.82, 2.45, -4.4],
+    position: [-14.82, 2.45, 4.4],
     rotation: [0, Math.PI / 2, 0],
     size: [2.25, 2.8125]
   },
@@ -33,7 +33,7 @@ export const pastArtworks = [
     meta: "STATION 1 · GRAMMAR RULE",
     image: "./assets/artworks/past/past-03.png",
     accent: "#8f4f38",
-    position: [-14.82, 2.45, 4.4],
+    position: [-14.82, 2.45, -4.4],
     rotation: [0, Math.PI / 2, 0],
     size: [2.25, 2.8125]
   }
